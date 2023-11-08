@@ -345,6 +345,7 @@
       }
     },
     created(){
+      
       // this.popup.color_popup_fondo = this.content.estilos.color_de_fondo
       // this.popup.color_popup_titulo = this.content.estilos.color_de_titulo
       // this.popup.color_popup_enlace = this.content.estilos.color_de_enlace
