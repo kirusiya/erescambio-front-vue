@@ -204,6 +204,32 @@
                               
                             }
               )
+
+		// Crea un intervalo para verificar y aplicar atributos de ancho y alto
+		setInterval(() => {
+			let container = document.getElementById("html-evento-" + this.data.bloque.ID);
+			//console.log(container);
+			if (container.innerHTML.trim() !== '') {
+				console.log('ya no esta vacio');
+				let images = document.querySelectorAll('.elementor-image img');
+				
+				images.forEach((image) => {
+					image.addEventListener('load', () => {
+					console.log(image);	
+					let originalWidth = image.naturalWidth;
+					let originalHeight = image.naturalHeight;
+
+					image.setAttribute('width', originalWidth);
+					image.setAttribute('height', originalHeight);
+					});
+				});
+				
+				// Si se encontraron imágenes y se les aplicaron atributos, detén el intervalo
+				if (images.length > 0) {
+					//clearInterval(intervalId);
+				}
+			}
+		}, 1000);	  
       
     }
   }

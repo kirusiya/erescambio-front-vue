@@ -128,6 +128,21 @@
       if( this.content.estilos.eliminar_margenes && this.content.estilos.eliminar_margenes == true ){
         this.margenes = "0px"
       }
+
+      //kiwop
+      let images = document.querySelectorAll('.bg.bloque-texto img');
+      images.forEach((image) => {
+        image.addEventListener('load', () => {
+          let originalWidth = image.naturalWidth;
+          let originalHeight = image.naturalHeight;
+
+          // Aplica el tamaño original a la imagen
+          image.setAttribute('width', originalWidth);
+          image.setAttribute('height', originalHeight);
+        });
+      });
+      //kiwop
+
     }
   }
 </script>

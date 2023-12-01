@@ -344,6 +344,22 @@
                },
       }
     },
+    //kiwop
+    mounted() {
+      
+      let images = document.querySelectorAll('.bloque-iconos img');
+      images.forEach((image) => {
+        image.addEventListener('load', () => {
+          let originalWidth = image.naturalWidth;
+          let originalHeight = image.naturalHeight;
+
+          image.setAttribute('width', originalWidth);
+          image.setAttribute('height', originalHeight);
+        });
+      });
+    },
+    //kiwop
+    
     created(){
       
       // this.popup.color_popup_fondo = this.content.estilos.color_de_fondo

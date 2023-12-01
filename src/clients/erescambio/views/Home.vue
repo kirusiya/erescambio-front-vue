@@ -610,7 +610,7 @@
 
         <div class="row">
 
-          <div class="col-12 col-md-6 text-center py-2">
+          <div class="col-12 col-md-6 text-center py-2 pie-pagina-obl">
             <img src="../assets/imgs/FUE_footer_white.png" alt="Financiado por la Unión Europea" style="max-width: 230px;" v-if="content.acf.pie_de_pagina_obligatorio == '2'" />
             <img src="../assets/imgs/FUE_footer_black.png" alt="Financiado por la Unión Europea" style="max-width: 230px;" v-else />
           </div>
@@ -956,6 +956,20 @@ export default {
     if (this.$route.hash) {
       location.href = this.$route.hash
     }
+
+    //kiwop
+    let images = document.querySelectorAll('.pie-pagina-obl img');
+      images.forEach((image) => {
+        image.addEventListener('load', () => {
+          let originalWidth = image.naturalWidth;
+          let originalHeight = image.naturalHeight;
+
+          // Aplica el tamaño original a la imagen
+          image.setAttribute('width', originalWidth);
+          image.setAttribute('height', originalHeight);
+        });
+      });
+    //kiwop
     
   }
 }

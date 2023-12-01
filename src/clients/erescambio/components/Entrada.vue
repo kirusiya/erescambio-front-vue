@@ -43,7 +43,7 @@
           </div>
           
         
-          <div class="col col-12 mb-5" v-if="entrada.post_image">
+          <div class="col col-12 mb-5 img-entrada" v-if="entrada.post_image">
             <img loading="lazy" 
                  class="img-destacada"
                  :src="entrada.post_image" />
@@ -73,6 +73,23 @@
         entrada: null
       }
     },
+
+    //kiwop
+    mounted() {
+      
+      let images = document.querySelectorAll('.img-entrada img');
+      images.forEach((image) => {
+        image.addEventListener('load', () => {
+          let originalWidth = image.naturalWidth;
+          let originalHeight = image.naturalHeight;
+
+          image.setAttribute('width', originalWidth);
+          image.setAttribute('height', originalHeight);
+        });
+      });
+    },
+    //kiwop
+    
     created(){
       this.entrada = this.$content      
     }

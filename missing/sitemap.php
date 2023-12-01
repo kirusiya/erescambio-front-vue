@@ -6,7 +6,7 @@ $curl = curl_init();
 $web = 'https://www.erescambio.com/wp-json/wp/v2/ztudio_webs_sitemap/?web=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => $web,
+  CURLOPT_URL => $web, 
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -21,28 +21,28 @@ curl_setopt_array($curl, array(
 
 $sitemap = curl_exec($curl);
 
-$sitemap = json_decode($sitemap,true);
+$sitemap_data = json_decode($sitemap, true);
 
 curl_close($curl);
 
 $urls_array = array();
 
 echo '<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
-    echo '<url>
-            <loc>https://' . $_SERVER['HTTP_HOST'] . '</loc>
-            <priority>1.00</priority>
-          </url>';    
-          
-    $urls_array[] = "";   
-    $urls_array[] = "/";   
-    
-    foreach ($sitemap as $url) {      
+echo '<url>
+        <loc>https://' . $_SERVER['HTTP_HOST'] . '</loc>
+        <priority>1.00</priority>
+      </url>';    
+
+/************MENUS**************/
+
+$urls_array[] = "";   
+$urls_array[] = "/"; 
+foreach ($sitemap_data as $url) {      
       $urltemp = explode("#", $url['menu_slug']);
       $url['menu_slug'] = $urltemp[0];
       
@@ -69,5 +69,23 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
         }        
       }
     }
+/************MENUS**************/ 
+      
+
+/************BLOG**************/
+$urls_array = array("");   
+$urls_array[] = "/";
+
+foreach ($sitemap_data as $url) {      
+    if ($url['post_status'] === 'publish') {
+        echo '<url>
+                <loc>https://' . $_SERVER['HTTP_HOST'] ."/". $url['post_name'] . '</loc>
+                <priority>0.80</priority>
+              </url>';
+        $urls_array[] = $url['post_name']; 
+    }
     
+} 
+/************BLOG**************/
+
 echo '</urlset>';
