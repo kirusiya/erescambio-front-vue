@@ -31,14 +31,14 @@ module.exports = {
   filenameHashing: false,
   configureWebpack: {
     output: {
-      filename: 'js/app.9f163af6.js',
-      chunkFilename: 'js/chunk-vendors.fc1c89fd.js'
+      filename: 'js/app.9f163af677.js',
+      chunkFilename: 'js/chunk-vendors.fc1c89fd77.js'
     }
   },
   css: {
     extract: {
-      filename: 'css/app.b1a9a820.css', 
-      chunkFilename: 'css/chunk-vendors.1a06b43d.css'
+      filename: 'css/app.b1a9a82077.css', 
+      chunkFilename: 'css/chunk-vendors.1a06b43d77.css'
     }
   }//hasta aca para exportar con el mismo nombre
   
