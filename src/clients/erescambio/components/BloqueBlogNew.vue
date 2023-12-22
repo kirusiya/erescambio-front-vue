@@ -107,7 +107,7 @@
           <div class="row wrapper-swipper-blog mosaico">
 
             <input type="hidden" id="no_paginas" name="no_paginas" 
-            :value="content.numero_de_articulos_a_mostrar || 3">
+            :value="content.numero_de_articulos_a_mostrar || 9">
             
             <div class="col" v-for="(blog, i) in paginatedNoticias" :key="i"> 
               
