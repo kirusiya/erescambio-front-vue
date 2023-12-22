@@ -19,6 +19,37 @@
       .bloque-{{data.bloque.ID}} .blog-title {
         color: {{ content.estilos.color_de_enlace }};
       }
+
+      .wrapper-swipper-blog+.pagination-buttons {
+          display: none;
+      }
+
+      .pagination-buttons {
+          margin-top: 50px;
+      }
+
+      .pagination-buttons button {
+          padding: 10px 20px;
+          margin: 0 5px;
+          background: #e7e7e7;
+          border: 0;
+          border-radius: 5px;
+          color: #484848;
+          cursor: pointer;
+      }
+
+      .pagination-buttons button:disabled {
+        background: #c0c0c0;
+        color: #808080;
+        cursor: not-allowed;
+      }
+
+      .pagination-buttons button.active {
+          cursor: not-allowed;
+          background: #808080;
+          color: #fff;
+          cursor: not-allowed;
+      }
       
     </v-style>
     <div class="bloque-blog" :class="`bloque-${data.bloque.ID}`">
@@ -74,8 +105,11 @@
         <div class="container" v-else>
           
           <div class="row wrapper-swipper-blog mosaico">
+
+            <input type="hidden" id="no_paginas" name="no_paginas" 
+            :value="content.numero_de_articulos_a_mostrar || 3">
             
-            <div class="col" v-for="(blog, i) in content.noticias" :key="i"> 
+            <div class="col" v-for="(blog, i) in paginatedNoticias" :key="i"> 
               
               <a :href="getUrl(blog)" :aria-label="`${blog.post_title}`">
               <div class="slide-element">
@@ -98,6 +132,15 @@
             
           </div>
           
+        </div>
+
+        <!-- Paginador con botones Anterior y Siguiente -->
+        <div class="pagination-buttons">
+          <button @click="loadPrevious" :disabled="currentPage === 1">Anterior</button>
+          <template v-for="page in visiblePages">
+            <button @click="setCurrentPage(page)" :class="{ active: page === currentPage }" :key="page">{{ page }}</button>
+          </template>
+          <button @click="loadNext" :disabled="currentPage * noticiasPerPage >= content.noticias.length">Siguiente</button>
         </div>
         
       </div>
@@ -162,16 +205,88 @@
               slidesPerGroup: 1,
             }
           }
-        }
+        },
+
+        noticiasPerPage: 10,
+        currentPage: 1,
+        visiblePages: [],
+
       }
     },
+
+
+    computed: {
+      paginatedNoticias() {
+        const startIndex = (this.currentPage - 1) * this.noticiasPerPage;
+        const endIndex = startIndex + this.noticiasPerPage;
+        return this.content.noticias.slice(startIndex, endIndex);
+      },
+      showLoadMoreButton() {
+        return this.currentPage * this.noticiasPerPage < this.content.noticias.length;
+      },
+    },
+  
+
+
+
     methods: {
-      getUrl(item){
-        // return this.$content.acf.canonical + "/" + item.post_name
-        return window.location.origin + "/" + item.post_name
-      }
+      getUrl(item) {
+        return window.location.origin + "/" + item.post_name;
+      },
+      loadPrevious() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+          this.calculateVisiblePages();
+          this.scrollToTop();
+        }
+      },
+      loadNext() {
+        if (this.currentPage * this.noticiasPerPage < this.content.noticias.length) {
+          this.currentPage++;
+          this.calculateVisiblePages();
+          this.scrollToTop();
+        }
+      },
+      scrollToTop() {
+        
+        const wrapperElement = document.querySelector('.wrapper-bloque-blog');
+
+        if (wrapperElement) {
+          setTimeout(() => {
+            wrapperElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+          }, 100);
+        }
+
+
+
+      },
+      calculateVisiblePages() {
+        const totalPages = Math.ceil(this.content.noticias.length / this.noticiasPerPage);
+        const maxVisiblePages = 5; // Ajusta según sea necesario
+
+        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        // Ajusta las páginas visibles si es necesario
+        while (endPage - startPage + 1 < maxVisiblePages && startPage > 1) {
+          startPage--;
+        }
+        while (endPage - startPage + 1 < maxVisiblePages && endPage < totalPages) {
+          endPage++;
+        }
+
+        this.visiblePages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+      },
+      setCurrentPage(page) {
+        this.currentPage = page;
+        this.scrollToTop();
+      },
+
     },
     mounted(){
+      this.noticiasPerPage = parseInt(document.getElementById('no_paginas').value);
+      this.calculateVisiblePages();
+
       // if(this.content.noticias.length < 3){
       //   if(document.querySelector(".bloque-" + this.data.bloque.ID) != null)
       //     document.querySelector(".bloque-" + this.data.bloque.ID).classList.add("no_slider"); 
